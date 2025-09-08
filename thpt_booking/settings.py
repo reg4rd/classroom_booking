@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-m#z!6g@57@b!g+
 DEBUG = False
 
 # QUAN TRỌNG: Thay 'tendangnhap' bằng tên đăng nhập PythonAnywhere của bạn
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['reg4rd.pythonanywhere.com']
 
 
 # Application definition
