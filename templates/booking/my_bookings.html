@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Lịch Dạy Của Tôi{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div class="p-6 border-b flex justify-between items-center">
+            <div>
+                 <h2 class="text-2xl font-bold text-gray-800">Lịch Dạy Của Bạn</h2>
+                 <p class="text-gray-500 mt-1">Danh sách các phòng học bạn đã đăng ký từ hôm nay trở đi.</p>
+            </div>
+            <a href="{% url 'booking_page' %}" class="inline-flex items-center bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Quay lại trang đăng ký
+            </a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50">
+                <tr class="border-b">
+                  <th class="text-left py-3 px-4 font-semibold text-gray-600">Ngày Dạy</th>
+                  <th class="text-left py-3 px-4 font-semibold text-gray-600">Phòng</th>
+                  <th class="text-left py-3 px-4 font-semibold text-gray-600">Buổi</th>
+                  <th class="text-left py-3 px-4 font-semibold text-gray-600">Tiết</th>
+                  <th class="text-center py-3 px-4 font-semibold text-gray-600">Hành Động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if grouped_bookings %}
+                    {% for group in grouped_bookings %}
+                    <tr x-data="{ showModal: false }" class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-4 font-medium text-gray-800">
+                            {% if group.date.weekday == 0 %}Thứ Hai
+                            {% elif group.date.weekday == 1 %}Thứ Ba
+                            {% elif group.date.weekday == 2 %}Thứ Tư
+                            {% elif group.date.weekday == 3 %}Thứ Năm
+                            {% elif group.date.weekday == 4 %}Thứ Sáu
+                            {% elif group.date.weekday == 5 %}Thứ Bảy
+                            {% endif %}, {{ group.date|date:"d/m/Y" }}
+                        </td>
+                        <td class="py-3 px-4 text-gray-600">{{ group.room.name }}</td>
+                        <td class="py-3 px-4 text-gray-600">{{ group.session }}</td>
+                        <td class="py-3 px-4 text-gray-600">
+                            {% for p in group.periods %}
+                                {% if p <= 5 %}{{ p }}{% else %}{{ p|add:"-5" }}{% endif %}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button @click="showModal = true" type="button" class="font-semibold text-red-600 hover:text-red-800">Hủy</button>
+
+                            <!-- Confirmation Modal -->
+                            <div x-show="showModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                    <div x-show="showModal" @click.away="showModal = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+                                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                    <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <div class="sm:flex sm:items-start">
+                                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                    </svg>
+                                                </div>
+                                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Xác nhận hủy lịch</h3>
+                                                    <div class="mt-2">
+                                                        <p class="text-sm text-gray-500">Bạn có chắc chắn muốn hủy các tiết học đã đăng ký này không? Hành động này không thể hoàn tác.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                            <form method="POST" action="{% url 'cancel_booking' %}" class="inline-block">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="booking_ids" value="{{ group.booking_ids }}">
+                                                <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                    Xác nhận hủy
+                                                </button>
+                                            </form>
+                                            <button @click="showModal = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
+                                                Hủy bỏ
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-16 text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Không có lịch dạy</h3>
+                            <p class="mt-1 text-sm text-gray-500">Bạn chưa đăng ký tiết dạy nào từ hôm nay.</p>
+                        </td>
+                    </tr>
+                {% endif %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

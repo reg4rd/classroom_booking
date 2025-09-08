@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - THPT Tuy Phong</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
+<div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 bg-white/70 backdrop-blur-xl p-10 rounded-2xl shadow-2xl">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-bold text-gray-900">
+        Chào mừng trở lại
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Đăng nhập vào tài khoản của bạn để tiếp tục
+      </p>
+    </div>
+    <form class="mt-8 space-y-6" method="POST">
+      {% csrf_token %}
+      <div class="rounded-md space-y-4">
+        <div>
+          <label for="username" class="text-sm font-medium text-gray-700">Tên đăng nhập</label>
+          <input id="username" name="username" type="text" autocomplete="username" required class="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Nhập tên đăng nhập">
+        </div>
+        <div>
+          <label for="password" class="text-sm font-medium text-gray-700">Mật khẩu</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required class="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Nhập mật khẩu">
+        </div>
+      </div>
+
+       {% if form.errors %}
+        <div class="p-4 bg-red-50 rounded-md">
+            <p class="text-sm text-red-700">Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại.</p>
+        </div>
+      {% endif %}
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Đăng nhập
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>
+
